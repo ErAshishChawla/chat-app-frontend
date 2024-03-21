@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { loginSchema, loginSchemaType } from "@/zod-schemas/signin-schema";
@@ -23,7 +23,7 @@ import { EyeIcon, EyeOff } from "lucide-react";
 
 function SignInCard() {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<loginSchemaType>({
@@ -57,34 +57,52 @@ function SignInCard() {
         <Divider />
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardBody className="gap-6 py-8 px-4">
-            <Input
-              type="email"
-              label="Email"
-              isInvalid={errors.email ? true : false}
-              errorMessage={errors.email?.message}
-              isDisabled={isSubmitting}
-              {...register("email")}
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <Input
+                    className="focus:outline-none"
+                    type="email"
+                    label="Email"
+                    isInvalid={errors.email ? true : false}
+                    errorMessage={errors.email?.message}
+                    isDisabled={isSubmitting}
+                    {...field}
+                  />
+                );
+              }}
             />
-            <Input
-              endContent={
-                <button
-                  className="focus:outline-none"
-                  type="button"
-                  onClick={toggleShowPassword}
-                >
-                  {showPassword ? (
-                    <EyeOff className="text-2xl text-default-400 pointer-events-none" />
-                  ) : (
-                    <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
-                  )}
-                </button>
-              }
-              type={showPassword ? "text" : "password"}
-              label="Password"
-              isInvalid={errors.password ? true : false}
-              errorMessage={errors.password?.message}
-              isDisabled={isSubmitting}
-              {...register("password")}
+
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <Input
+                    endContent={
+                      <button
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={toggleShowPassword}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="text-2xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
+                    type={showPassword ? "text" : "password"}
+                    label="Password"
+                    isInvalid={errors.password ? true : false}
+                    errorMessage={errors.password?.message}
+                    isDisabled={isSubmitting}
+                    {...field}
+                  />
+                );
+              }}
             />
           </CardBody>
           <Divider />
